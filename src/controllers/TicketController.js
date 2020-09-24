@@ -18,13 +18,14 @@ module.exports = {
     async store(req, res) {
         const { users_id } = req.params
         const { assunto, mensagem } = req.body
-
+        console.log(users_id)
         const user = await User.findByPk(users_id)
+
 
         if (!user) {
             return res.status(400).json({ error: 'User not found' })
         }
-
+        console.log("User id: ", users_id)
         const ticket = await Ticket.create({
             assunto,
             mensagem,
@@ -35,41 +36,41 @@ module.exports = {
     },
 
     async delete(req, res) {
-        const { id } = req.params
 
-        const ticket = await Ticket.findByPk(id)
+        const ticket = await Ticket.findByPk(req.body.id)
 
         if (!ticket) {
             return res.status(400).json({ error: 'Ticket not found' })
+        } else {
+            await ticket.destroy()
+            return res.json()
         }
-
-        await ticket.destroy()
-
-        return res.json()
 
     },
 
     async update(req, res) {
-        const { id } = req.params
+        //const { id } = req.params
         const { assunto, mensagem } = req.body
 
 
-        const ticket = await Ticket.findByPk(id)
+        const ticket = await Ticket.findByPk(req.body.id)
 
+        console.log(assunto, mensagem)
         if (!ticket) {
             return res.status(400).json({ error: 'Ticket not found' })
+        } else {
+
+            await ticket.update(
+                {
+                    assunto
+                },
+                {
+                    mensagem
+                },
+            )
+                .then(result => res.json({ message: 'Update succecss' }))
+                .catch(error => res.json({ message: 'Erro ao atualizar' }))
+
         }
-
-        await ticket.update(
-            {
-                assunto
-            },
-            {
-                mensagem
-            },
-        )
-            .then(result => res.json({ message: 'Update succecss' }))
-            .catch(error => res.json({ message: 'Erro ao atualizar' }))
-
     }
 }

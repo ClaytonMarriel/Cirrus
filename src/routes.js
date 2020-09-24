@@ -17,6 +17,7 @@ routes.use(authMiddleware)
 
 routes.post('/users/:users_id/tickets', TicketController.store)
 routes.get('/users/:users_id/tickets', TicketController.index)
+
 routes.delete('/users/:id/tickets', TicketController.delete)
 routes.put('/users/:id/tickets', TicketController.update)
 module.exports = routes
